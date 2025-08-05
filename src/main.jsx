@@ -1,29 +1,26 @@
-import React from "react"
-import ReactDOM from "react-dom/client"
-import { BrowserRouter, Routes, Route } from "react-router-dom"
-import "./index.css"
-
-import ProtectedRoute from "./components/ProtectedRoute"
-import LoginPage from "./pages/LoginPage"
-import Home from "./pages/Home"
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import LoginPage from "./pages/LoginPage";
+import Dashboard from "./pages/Dashboard";
+import ProtectedRoute from "./components/ProtectedRoute";
+import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
-        {/* Rota pública */}
         <Route path="/login" element={<LoginPage />} />
-
-        {/* Rotas protegidas */}
         <Route
-          path="/"
+          path="/dashboard"
           element={
             <ProtectedRoute>
-              <Home />
+              <Dashboard />
             </ProtectedRoute>
           }
         />
+        <Route path="*" element={<LoginPage />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
-)
+);
