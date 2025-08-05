@@ -1,38 +1,36 @@
-import { useEffect, useState } from 'react'
-import { Routes, Route, Navigate } from 'react-router-dom'
-import { supabase } from '@/lib/supabase'
-import LoginPage from '@/pages/LoginPage'
-import AdminLoginAppearance from '@/pages/admin/AdminLoginAppearance'
-import Dashboard from '@/pages/Dashboard'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Layout from './components/Layout';
+import LoginPage from './pages/LoginPage';
+import Dashboard from './pages/Dashboard';
+import ProtectedRoute from './components/ProtectedRoute';
+import Home from './pages/Home';
+import Admin from './pages/Admin';
+import ProductPage from './pages/ProductPage';
+import About from './pages/About';
+import './App.css';
 
-function ProtectedRoute({ session, children }) {
-  if (session === undefined) return null // enquanto checa sessão
-  if (!session) return <Navigate to="/login" replace />
-  return children
-}
-
-export default function App() {
-  const [session, setSession] = useState(undefined) // undefined = carregando
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => setSession(data.session))
-    const { data: sub } = supabase.auth.onAuthStateChange((_evt, sess) => setSession(sess))
-    return () => sub.subscription.unsubscribe()
-  }, [])
-
+function App() {
   return (
-    <Routes>
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/admin/aparencia/login" element={<AdminLoginAppearance />} />
-      <Route
-        path="/"
-        element={
-          <ProtectedRoute session={session}>
-            <Dashboard />
-          </ProtectedRoute>
-        }
-      />
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
-  )
+    <Router>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
+          <Route path="/vivo-sip" element={<ProductPage productId="vivo-sip" />} />
+          <Route path="/vivo-0800" element={<ProductPage productId="vivo-0800" />} />
+          <Route path="/vivo-voz-negocios" element={<ProductPage productId="vivo-voz-negocios" />} />
+          <Route path="/vivo-internet-fibra" element={<ProductPage productId="vivo-internet-fibra" />} />
+          <Route path="/vivo-internet-dedicada" element={<ProductPage productId="vivo-internet-dedicada" />} />
+          <Route path="/combo-vivo-sip-internet-dedicada" element={<ProductPage productId="combo-vivo-sip-internet-dedicada" />} />
+          <Route path="/licencas-microsoft" element={<ProductPage productId="licencas-microsoft" />} />
+          <Route path="/ajuda-ai" element={<ProductPage productId="ajuda-ai" />} />
+          <Route path="/sobre" element={<About />} />
+        </Routes>
+      </Layout>
+    </Router>
+  );
 }
+
+export default App;
